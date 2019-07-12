@@ -19,28 +19,27 @@ class Board extends React.Component {
       <Square
         value={this.props.squares[i]}
         onClick={() => this.props.onClick(i)}
+        key={`square ${i}`}
       />
     );
+  }
+
+  createCells = () => {
+    let rows = [];
+    for (let i = 0; i < 3; i ++) {
+      let cells = [];
+        for (let n = 0; n < 3; n++) {
+          cells.push(this.renderSquare(3 * i + n));
+        }
+      rows.push(<div className="board-row" key={`row ${i}`}>{cells}</div>);
+    }
+    return rows;
   }
 
   render() {
     return (
       <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
+        {this.createCells()}
       </div>
     );
   }
@@ -100,11 +99,13 @@ class Game extends React.Component {
 
     const moves = history.map((step, move) => {
       const desc = move ?
-        `Go to move # ${move} (row: ${step.currentRow}, col: ${step.currentColumn})` :
+        `Go to move # ${move} (col: ${step.currentColumn}, row: ${step.currentRow})` :
         'Go to game start';
       return (
         <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          <button onClick={() => this.jumpTo(move)}>
+            {move === this.state.stepNumber ? <b>{desc}</b> : desc}
+          </button>
         </li>
       )
     });
